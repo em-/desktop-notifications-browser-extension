@@ -1,0 +1,23 @@
+Desktop Notifications browser extension
+=======================================
+
+This browser extension provides native desktop notifications for Linux
+desktop environments (eg. GNOME or KDE) using libnotify.
+
+To build the extension from a release tarball, the usual autotool procedure
+should be followed:
+
+ $ ./configure
+ $ make
+ # make install
+
+If you're building from a Git clone, run the autogen.sh script instead
+of the configure one. The autogen.sh script will run the configure script
+for you, unless the NOCONFIGURE environment variable is set to a non-empty
+value.
+
+License
+=======
+The Desktop Notifications browser extension is distributed under the terms of
+the GNU Lesser General Public License, version 2 or later. See the COPYING
+file for details.

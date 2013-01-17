@@ -1,0 +1,4 @@
+{
+  "external_crx": "@EXTDIR@",
+  "external_version": "@VERSION@"
+}
