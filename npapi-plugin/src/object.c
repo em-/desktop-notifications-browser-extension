@@ -180,6 +180,40 @@ static NPClass js_object_class = {
     .construct = NPClass_Construct
 };
 
+static GdkPixbuf*
+dn_data_url_to_pixbuf(const NPVariant *data_url)
+{
+    GdkPixbuf *pixbuf = NULL;
+    GInputStream *stream;
+    gsize len;
+    gchar *buffer, *data;
+    GError *err = NULL;
+
+    buffer = variant_to_string (data_url);
+    if (buffer == NULL)
+        return NULL;
+
+    g_debug ("%s(\"%s\")", G_STRFUNC, buffer);
+
+    if (!g_str_has_prefix (buffer, "data:image/png;base64,"))
+        goto out;
+
+    /* skip the mime type prefix */
+    data = buffer + 22;
+
+    g_base64_decode_inplace (data, &len);
+    stream = g_memory_input_stream_new_from_data (data, len, NULL);
+    pixbuf = gdk_pixbuf_new_from_stream (stream, NULL, &err);
+    if (err != NULL)
+      {
+        g_debug ("%s error: %s", G_STRFUNC, err->message);
+        g_error_free (err);
+      }
+out:
+    g_free (buffer);
+    return pixbuf;
+}
+
 static NPVariant
 dn_show_notification (NPObject *object,
                       const NPVariant *args,
@@ -187,6 +221,7 @@ dn_show_notification (NPObject *object,
 {
     NPVariant result;
     gchar *summary, *body = NULL;
+    GdkPixbuf *image = NULL;
     gboolean shown;
 
     BOOLEAN_TO_NPVARIANT (FALSE, result);
@@ -203,9 +238,14 @@ dn_show_notification (NPObject *object,
     if (argc >= 2)
         body = variant_to_string (&args[1]);
 
-    g_debug ("%s(\"%s\", \"%s\", ...)", G_STRFUNC, summary, body);
+    if (argc >= 3)
+        image = dn_data_url_to_pixbuf(&args[2]);
+
+    g_debug ("%s(\"%s\", \"%s\", %s)", G_STRFUNC, summary, body, image != NULL ? "<image>" : NULL);
 
     NotifyNotification *notification = notify_notification_new (summary, body, NULL);
+    if (image != NULL)
+        notify_notification_set_image_from_pixbuf (notification, image);
     shown = notify_notification_show (notification, NULL);
 
     /*TODO: notify_notification_set_image_from_pixbuf() */
@@ -215,6 +255,8 @@ dn_show_notification (NPObject *object,
     g_free (summary);
     if (body != NULL)
         g_free (body);
+    if (image != NULL)
+        g_object_unref (image);
     return result;
 }
 

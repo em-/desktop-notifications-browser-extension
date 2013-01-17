@@ -29,9 +29,29 @@ var observer = new WebKitMutationObserver(function(mutations, observer) {
 });
 observer.observe(document, { subtree: true, childList: true });
 
+function getImageDataURL(url, callback) {
+    var img = new Image();
+    img.onload = function() {
+        // Convert using a <canvas> and then invoke the callback
+        var canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        var data = canvas.toDataURL("image/png");
+        callback({image:img, data:data});
+    };
+    // Trigger the image loading
+    img.src = url;
+}
+
 window.onmessage = function (evt) {
     if (typeof(evt.data) != 'object' || evt.data['type'] != 'show-notification')
         return;
     console.log("dn: Forward notification request to background page", evt.data);
-    chrome.extension.sendMessage(evt.data);
+    // Encode the image in data: URL
+    getImageDataURL(evt.data["icon"], function(encoded) {
+        evt.data.icon = encoded.data;
+        chrome.extension.sendMessage(evt.data);
+    });
 }
