@@ -13,8 +13,10 @@ SCRIPT_FILES = \
 
 noinst_DATA = $(SCRIPT_FILES)
 
-res/desktop-notifications.crx: $(SCRIPT_FILES) manifest.json desktop-notifications.json
-	cp -f $(top_builddir)/npapi-plugin/src/.libs/libdesktopnotifications_npapi_plugin.so .
+NPAPI_PLUGIN=$(top_builddir)/npapi-plugin/src/.libs/libdesktopnotifications_npapi_plugin.so
+
+res/desktop-notifications.crx: $(SCRIPT_FILES) manifest.json desktop-notifications.json $(NPAPI_PLUGIN)
+	cp -f $(NPAPI_PLUGIN) .
 	if [ ! -f ../desktop-notifications.pem ]; \
 	then \
 		openssl genrsa 1024 > ../desktop-notifications.pem; \
