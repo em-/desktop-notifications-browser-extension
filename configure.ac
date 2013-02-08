@@ -46,9 +46,9 @@ dnl Chromium extension
 dnl ***************************************************************************
 
 AC_ARG_ENABLE(chromium, 
-	AC_HELP_STRING([--enable-chromium], 
+	AS_HELP_STRING([--enable-chromium],
 		[Build chromium extension. [default=yes]]),
-		[enable_chromium="no"], [enable_chromium="yes"])
+		[enable_chromium=$enableval], [enable_chromium="yes"])
 if test "x$enable_chromium" = "xyes"; then
     AC_DEFINE([WITH_CHROMIUM], 1, [Build chromium extension.])
 fi
