@@ -47,14 +47,21 @@ dnl ***************************************************************************
 
 AC_ARG_ENABLE(chromium, 
 	AS_HELP_STRING([--enable-chromium],
-		[Build chromium extension. [default=yes]]),
+		[Build Chromium extension. [default=yes]]),
 		[enable_chromium=$enableval], [enable_chromium="yes"])
 if test "x$enable_chromium" = "xyes"; then
-    AC_DEFINE([WITH_CHROMIUM], 1, [Build chromium extension.])
+    AC_DEFINE([WITH_CHROMIUM], 1, [Build Chromium extension.])
 fi
 AM_CONDITIONAL([WITH_CHROMIUM], [test "x$enable_chromium" = "xyes"])
 
-
+AC_ARG_ENABLE(google-chrome,
+	AS_HELP_STRING([--enable-google-chrome],
+		[Build Google Chrome extension. [default=yes]]),
+		[enable_google_chrome=$enableval], [enable_google_chrome="yes"])
+if test "x$enable_google_chrome" = "xyes"; then
+    AC_DEFINE([WITH_GOOGLE_CHROME], 1, [Build Google Chrome extension.])
+fi
+AM_CONDITIONAL([WITH_GOOGLE_CHROME], [test "x$enable_google_chrome" = "xyes"])
 
 AC_CONFIG_FILES([
 Makefile
@@ -70,5 +77,6 @@ AC_MSG_NOTICE([
   desktop-notifications-browser-extension $VERSION
   ----------------------
 
-  Chromium extension  : ${enable_chromium}
+  Chromium extension      : ${enable_chromium}
+  Google Chrome extension : ${enable_google_chrome}
 ])

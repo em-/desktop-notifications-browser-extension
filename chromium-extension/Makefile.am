@@ -1,7 +1,7 @@
 CLEANFILES = res/*
 EXTRA_DIST =
 
-extensiondir = $(libdir)/desktop-notifications-chromium
+extensiondir = $(libdir)/desktop-notifications-chromium-common
 extension_DATA=res/desktop-notifications.crx
 
 clean-extension-package:
@@ -24,8 +24,15 @@ res/desktop-notifications.crx: $(SCRIPT_FILES) manifest.json desktop-notificatio
 	$(srcdir)/crxmake.sh $(abs_builddir) ../desktop-notifications.pem
 	mv res/chromium-extension.crx res/desktop-notifications.crx
 
-manifestdir = $(datadir)/chromium/extensions/
-manifest_DATA = $(wildcard $(top_builddir)/chromium-extension/res/*.json)
+if WITH_CHROMIUM
+chromiummanifestdir = $(datadir)/chromium/extensions/
+chromiummanifest_DATA = $(wildcard $(top_builddir)/chromium-extension/res/*.json)
+endif
+
+if WITH_GOOGLE_CHROME
+googlechromemanifestdir = $(datadir)/google-chrome/extensions/
+googlechromemanifest_DATA = $(wildcard $(top_builddir)/chromium-extension/res/*.json)
+endif
 
 %.json: %.json.in
 	sed -e "s|\@EXTDIR\@|$(extensiondir)/desktop-notifications.crx|" \
