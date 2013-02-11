@@ -1,11 +1,11 @@
-SUBDIRS = npapi-plugin po
-
 if WITH_CHROMIUM
-SUBDIRS += chromium-extension
+CHROMIUM_SUBDIR = chromium-extension
 endif
 if WITH_GOOGLE_CHROME
-SUBDIRS += chromium-extension
+CHROMIUM_SUBDIR = chromium-extension
 endif
+
+SUBDIRS = npapi-plugin po $(CHROMIUM_SUBDIR)
 
 ACLOCAL_AMFLAGS = -I m4
 
