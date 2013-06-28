@@ -30,7 +30,7 @@ var observer = new WebKitMutationObserver(function(mutations, observer) {
 observer.observe(document, { subtree: true, childList: true });
 
 function getImageDataURL(url, callback) {
-    var img = new Image();
+    var img = document.createElement('img');
     img.onload = function() {
         // Convert using a <canvas> and then invoke the callback
         var canvas = document.createElement('canvas');
